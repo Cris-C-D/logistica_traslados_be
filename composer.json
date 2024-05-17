@@ -1,0 +1,18 @@
+{
+    "name": "uwipes/api_entregas",
+    "description": "api para logistica y entregas",
+    "type": "project",
+    "require": {
+        "bramus/router": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "ApiEntregas\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Cristian Castellanos"
+        }
+    ]
+}
