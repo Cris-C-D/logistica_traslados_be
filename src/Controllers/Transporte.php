@@ -16,4 +16,13 @@ class Transporte extends Controller
     {
         $this->response(["transportes" => TransporteModel::getTransportes()]);
     }
+
+    public function create()
+    {
+        $this->exists(['transporte']);
+        $transporte = new TransporteModel();
+        $transporte->setTransporte($this->data['transporte']);
+
+        $this->response($transporte->save());
+    }
 }

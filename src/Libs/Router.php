@@ -31,6 +31,11 @@ $router->get('/transportes', function (){
     $transporte->getTransportes();
 });
 
+$router->post('/transportes/create', function (){
+    $transporte = new Transporte();
+    $transporte->create();
+});
+
 $router->set404(function(){
     echo json_encode(["message" => "404 not found"]);
 });

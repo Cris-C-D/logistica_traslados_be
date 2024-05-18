@@ -33,11 +33,48 @@ class TrasladoModel extends Model
         }
     }
 
-    public static function get()
+    public static function get(int $idUsuario = 0, int $idOrigen = 0, int $idDestino = 0, int $idTransporte = 0)
     {
         try{
             $pdo = new Model();
-            $query = $pdo->query("WITH difference_in_seconds AS (
+            $arrayFilters = array();
+            $arrayParams = array();
+
+            if($idUsuario!=0){
+                $arrayFilters[]="idUsuario LIKE :id_usuario";
+                $arrayParams[':id_usuario'] = "%$idUsuario%";
+            }
+
+            if($idOrigen!=0){
+                $arrayFilters[]="idOrigen LIKE :id_origen";
+                $arrayParams[':id_origen'] = "%$idOrigen%";
+            }
+
+            if($idDestino!=0){
+                $arrayFilters[]="idDestino LIKE :id_destino";
+                $arrayParams[':id_destino'] = "%$idDestino%";
+            }
+
+            if($idTransporte!=0){
+                $arrayFilters[]="idTransporte LIKE :id_transporte";
+                $arrayParams[':id_transporte'] = "%$idTransporte%";
+            }
+
+            $sqlFiltros = "";
+            if ($arrayFilters != "") {
+                for ($i = 0; $i < count($arrayFilters); $i++) {
+                    if ($i == 0) {
+                        $sqlFiltros .= " WHERE " . $arrayFilters[$i];
+                    } else {
+                        $sqlFiltros .= " AND " . $arrayFilters[$i];
+                    }
+                }
+                echo $sqlFiltros;
+            }
+
+
+
+            $sql = "WITH difference_in_seconds AS (
                 SELECT t.idTraslado, p.idUsuario, CONCAT(p.nombre, ' ', p.apellidos) AS nombre, uo.idUbicacion AS idOrigen, uo.ubicacion AS origen, ud.idUbicacion AS idDestino,  ud.ubicacion AS destino, tr.idTransporte, tr.transporte, tt.idTipo, tt.tipoTraslado, t.fechaInicio, t.fechaFin, TIMESTAMPDIFF(SECOND, t.fechaInicio, t.fechaFin) AS seconds
                 FROM traslado t 
                 INNER JOIN usuario p ON t.idUsuario=p.idUsuario
@@ -52,7 +89,12 @@ class TrasladoModel extends Model
                 )
                 SELECT idTraslado, idUsuario, nombre, idOrigen, origen, idDestino, destino, idTransporte, transporte, idTipo tipoTraslado, fechaInicio, fechaFin, CONCAT(FLOOR(seconds / 3600 / 24), ' dias ', FLOOR(hours_part / 3600), ' horas ', FLOOR(minutes_part / 60), ' minutos '
                 ) AS tiempoTraslado
-                FROM differences");
+                FROM differences";
+
+            $sql .=$sqlFiltros;
+            $query = $pdo->prepare($sql);
+
+            $query->execute($arrayParams);
 
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch(PDOException $e){

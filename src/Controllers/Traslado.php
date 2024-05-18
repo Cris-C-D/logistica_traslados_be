@@ -19,7 +19,11 @@ class Traslado extends Controller
 
     public function getTraslados()
     {
-        $this->response(["traslados" => TrasladoModel::get()]);
+        $idUsuario = (isset($_GET['idUsuario']) && $_REQUEST['idUsuario'] !=NULL)?$_GET['idUsuario']:0;
+        $idOrigen = (isset($_GET['idOrigen']) && $_REQUEST['idOrigen'] !=NULL)?$_GET['idOrigen']:0;
+        $idDestino = (isset($_GET['idDestino']) && $_REQUEST['idDestino'] !=NULL)?$_GET['idDestino']:0;
+        $idTransporte = (isset($_GET['idTransporte']) && $_REQUEST['idTransporte'] !=NULL)?$_GET['idTransporte']:0;
+        $this->response(["traslados" => TrasladoModel::get($idUsuario, $idOrigen, $idDestino, $idTransporte)]);
     }
 
     public function create()

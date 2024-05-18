@@ -24,4 +24,32 @@ class TransporteModel extends Model
             return array("error" => $e->getMessage());
         }
     }
+
+    public function save()
+    {
+        try{
+            $c = $this->connect();
+            $c->beginTransaction();
+
+            $query = $this->prepare("INSERT INTO transporte (transporte) VALUES (?)");
+            $query->bindValue(1, $this->transporte, PDO::PARAM_STR);
+
+            if($query->execute()){
+                return array("ok" => true, "msj" => "Transporte registrado");
+            }
+        } catch(PDOException $e){
+            error_log('TransporteModal::save()->' . $e->getMessage());
+            return array("ok" => false, "msj" => $e->getMessage());
+        }
+    }
+
+    public function getTransporte()
+    {
+        return $this->transporte;
+    }
+
+    public function setTransporte($transporte)
+    {
+        $this->transporte = $transporte;
+    }
 }
