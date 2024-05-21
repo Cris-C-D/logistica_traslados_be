@@ -38,7 +38,7 @@ class TransporteModel extends Model
                 return array("ok" => true, "msj" => "Transporte registrado");
             }
         } catch(PDOException $e){
-            error_log('TransporteModal::save()->' . $e->getMessage());
+            error_log('TransporteModel::save()->' . $e->getMessage());
             return array("ok" => false, "msj" => $e->getMessage());
         }
     }

@@ -24,4 +24,32 @@ class UbicacionModel extends Model
             return array("error" => $e->getMessage());
         }
     }
+
+    public function save()
+    {
+        try{
+            $c = $this->connect();
+            $c->beginTransaction();
+
+            $query = $this->prepare("INSERT INTO ubicacion (ubicacion) VALUES (?)");
+            $query->bindValue(1, $this->ubicacion, PDO::PARAM_STR);
+
+            if($query->execute()){
+                return array("ok" => true, "msj" => "Ubicacion registrada");
+            }
+        } catch(PDOException $e){
+            error_log('UbicacionModel::save()->' . $e->getMessage());
+            return array("ok" => false, "msj" => $e->getMessage());
+        }
+    }
+
+    public function getUbicacion()
+    {
+        return $this->ubicacion;
+    }
+
+    public function setUbicacion($ubicacion)
+    {
+        $this->ubicacion = $ubicacion;
+    }
 }

@@ -16,4 +16,13 @@ class Ubicacion extends Controller
     {
         $this->response(["ubicaciones" => UbicacionModel::getUbicaciones()]);
     }
+
+    public function create()
+    {
+        $this->exists(['ubicacion']);
+        $ubicacion = new UbicacionModel();
+        $ubicacion->setUbicacion($this->data['ubicacion']);
+        
+        $this->response($ubicacion->save());
+    }
 }

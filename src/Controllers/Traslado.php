@@ -20,24 +20,36 @@ class Traslado extends Controller
     public function getTraslados()
     {
         $idUsuario = (isset($_GET['idUsuario']) && $_REQUEST['idUsuario'] !=NULL)?$_GET['idUsuario']:0;
-        $idOrigen = (isset($_GET['idOrigen']) && $_REQUEST['idOrigen'] !=NULL)?$_GET['idOrigen']:0;
-        $idDestino = (isset($_GET['idDestino']) && $_REQUEST['idDestino'] !=NULL)?$_GET['idDestino']:0;
+        $idUbicacionOrigen = (isset($_GET['idUbicacionOrigen']) && $_REQUEST['idUbicacionOrigen'] !=NULL)?$_GET['idUbicacionOrigen']:0;
+        $idUbicacionDestino = (isset($_GET['idUbicacionDestino']) && $_REQUEST['idUbicacionDestino'] !=NULL)?$_GET['idUbicacionDestino']:0;
         $idTransporte = (isset($_GET['idTransporte']) && $_REQUEST['idTransporte'] !=NULL)?$_GET['idTransporte']:0;
-        $this->response(["traslados" => TrasladoModel::get($idUsuario, $idOrigen, $idDestino, $idTransporte)]);
+        $open = (isset($_GET['open']) && $_REQUEST['open'] !=NULL)?$_GET['open']:0;
+        $fechaInicio = (isset($_GET['fechaInicio']) && $_REQUEST['fechaInicio'] !=NULL)?$_GET['fechaInicio']:'';
+        $fechaFin = (isset($_GET['fechaFin']) && $_REQUEST['fechaFin'] !=NULL)?$_GET['fechaFin']:'';
+        $this->response(["traslados" => TrasladoModel::get($idUsuario, $idUbicacionOrigen, $idUbicacionDestino, $idTransporte, $open, $fechaInicio, $fechaFin)]);
     }
 
     public function create()
     {
-        $this->exists(['idUsuario', 'idUbicacionOrigen', 'idUbicacionDestino', 'idTransporte', 'idTipoTraslado', 'fechaInicio', 'fechaFin']);
+        $this->exists(['idUsuario', 'idUbicacionOrigen', 'idUbicacionDestino', 'idTransporte', 'idTipoTraslado']);
         $traslado = new TrasladoModel();
         $traslado->setIdUsuario($this->data['idUsuario']);
         $traslado->setIdUbicacionOrigen($this->data['idUbicacionOrigen']);
         $traslado->setIdUbicacionDestino($this->data['idUbicacionDestino']);
         $traslado->setIdTransporte($this->data['idTransporte']);
         $traslado->setIdTipoTraslado($this->data['idTipoTraslado']);
-        $traslado->setFechaInicio($this->data['fechaInicio']);
-        $traslado->setFechaFin($this->data['fechaFin']);
+        $traslado->setFechaInicio(date("Y-m-d h:i:s"));
 
         $this->response($traslado->save());
+    }
+
+    public function close()
+    {
+        $this->exists(['idTraslado']);
+        $traslado = new TrasladoModel();
+        $traslado->setId($this->data['idTraslado']);
+        $traslado->setFechaFin(date("Y-m-d h:i:s"));
+
+        $this->response($traslado->close());
     }
 }

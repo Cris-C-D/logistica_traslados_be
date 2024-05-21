@@ -33,7 +33,7 @@ class TrasladoModel extends Model
         }
     }
 
-    public static function get(int $idUsuario = 0, int $idOrigen = 0, int $idDestino = 0, int $idTransporte = 0)
+    public static function get(int $idUsuario = 0, int $idUbicacionOrigen = 0, int $idUbicacionDestino = 0, int $idTransporte = 0, int $open = 0, string $fechaInicio = '', string $fechaFin = '')
     {
         try{
             $pdo = new Model();
@@ -42,22 +42,37 @@ class TrasladoModel extends Model
 
             if($idUsuario!=0){
                 $arrayFilters[]="idUsuario LIKE :id_usuario";
-                $arrayParams[':id_usuario'] = "%$idUsuario%";
+                $arrayParams[':id_usuario'] = $idUsuario;
             }
 
-            if($idOrigen!=0){
-                $arrayFilters[]="idOrigen LIKE :id_origen";
-                $arrayParams[':id_origen'] = "%$idOrigen%";
+            if($idUbicacionOrigen!=0){
+                $arrayFilters[]="idUbicacionOrigen LIKE :id_origen";
+                $arrayParams[':id_origen'] = $idUbicacionOrigen;
             }
 
-            if($idDestino!=0){
-                $arrayFilters[]="idDestino LIKE :id_destino";
-                $arrayParams[':id_destino'] = "%$idDestino%";
+            if($idUbicacionDestino!=0){
+                $arrayFilters[]="idUbicacionDestino LIKE :id_destino";
+                $arrayParams[':id_destino'] = $idUbicacionDestino;
             }
 
             if($idTransporte!=0){
                 $arrayFilters[]="idTransporte LIKE :id_transporte";
-                $arrayParams[':id_transporte'] = "%$idTransporte%";
+                $arrayParams[':id_transporte'] = $idTransporte;
+            }
+
+            if($open!=0){
+                $arrayFilters[]="fechaFin IS NULL";
+            }
+
+            if($fechaInicio!=''){
+                if($fechaFin!=''){
+                    $arrayFilters[]="fechaInicio BETWEEN :fecha_inicio AND :fecha_fin";
+                    $arrayParams[':fecha_inicio'] = "$fechaInicio";
+                    $arrayParams[':fecha_fin'] = "$fechaFin";
+                } else{
+                    $arrayFilters[]="fechaInicio LIKE :fecha_inicio";
+                    $arrayParams[':fecha_inicio'] = "%$fechaInicio%";
+                }
             }
 
             $sqlFiltros = "";
@@ -69,13 +84,12 @@ class TrasladoModel extends Model
                         $sqlFiltros .= " AND " . $arrayFilters[$i];
                     }
                 }
-                echo $sqlFiltros;
             }
 
 
 
             $sql = "WITH difference_in_seconds AS (
-                SELECT t.idTraslado, p.idUsuario, CONCAT(p.nombre, ' ', p.apellidos) AS nombre, uo.idUbicacion AS idOrigen, uo.ubicacion AS origen, ud.idUbicacion AS idDestino,  ud.ubicacion AS destino, tr.idTransporte, tr.transporte, tt.idTipo, tt.tipoTraslado, t.fechaInicio, t.fechaFin, TIMESTAMPDIFF(SECOND, t.fechaInicio, t.fechaFin) AS seconds
+                SELECT t.idTraslado, p.idUsuario, CONCAT(p.nombre, ' ', p.apellidos) AS nombre, uo.idUbicacion AS idUbicacionOrigen, uo.ubicacion AS origen, ud.idUbicacion AS idUbicacionDestino,  ud.ubicacion AS destino, tr.idTransporte, tr.transporte, tt.idTipo, tt.tipoTraslado AS idTipoTraslado, t.fechaInicio, t.fechaFin, TIMESTAMPDIFF(SECOND, t.fechaInicio, t.fechaFin) AS seconds
                 FROM traslado t 
                 INNER JOIN usuario p ON t.idUsuario=p.idUsuario
                 INNER JOIN ubicacion uo ON t.idUbicacionOrigen=uo.idUbicacion
@@ -84,10 +98,10 @@ class TrasladoModel extends Model
                 INNER JOIN tipo_traslado tt ON t.idTipoTraslado=tt.idTipo
                 ),
                 differences AS (
-                SELECT idTraslado, idUsuario, nombre, idOrigen, origen, idDestino, destino, idTransporte, transporte, idTipo, tipoTraslado, fechaInicio, fechaFin, seconds, MOD(seconds, 60) AS seconds_part, MOD(seconds, 3600) AS minutes_part, MOD(seconds, 3600 * 24) AS hours_part
+                SELECT idTraslado, idUsuario, nombre, idUbicacionOrigen, origen, idUbicacionDestino, destino, idTransporte, transporte, idTipo, idTipoTraslado, fechaInicio, fechaFin, seconds, MOD(seconds, 60) AS seconds_part, MOD(seconds, 3600) AS minutes_part, MOD(seconds, 3600 * 24) AS hours_part
                 FROM difference_in_seconds
                 )
-                SELECT idTraslado, idUsuario, nombre, idOrigen, origen, idDestino, destino, idTransporte, transporte, idTipo tipoTraslado, fechaInicio, fechaFin, CONCAT(FLOOR(seconds / 3600 / 24), ' dias ', FLOOR(hours_part / 3600), ' horas ', FLOOR(minutes_part / 60), ' minutos '
+                SELECT idTraslado, idUsuario, nombre, idUbicacionOrigen, origen, idUbicacionDestino, destino, idTransporte, transporte, idTipo idTipoTraslado, fechaInicio, fechaFin, CONCAT(FLOOR(seconds / 3600 / 24), ' dias ', FLOOR(hours_part / 3600), ' horas ', FLOOR(minutes_part / 60), ' minutos '
                 ) AS tiempoTraslado
                 FROM differences";
 
@@ -125,6 +139,36 @@ class TrasladoModel extends Model
             error_log('TrasladoModel::save()->' . $e->getMessage());
             return array("ok" => false, "msj" => $e->getMessage());
         }
+    }
+
+    public function close()
+    {
+        try{
+            $c = $this->connect();
+            $c->beginTransaction();
+    
+            $query = $this->prepare("UPDATE traslado SET fechaFin = :fechaFin WHERE idTraslado = :idTraslado");
+            $query->bindValue(':idTraslado', $this->idTraslado, PDO::PARAM_INT);
+            $query->bindValue(':fechaFin', $this->fechaFin, PDO::PARAM_STR);
+
+            if($query->execute()){
+                return array("ok" => true, "msj" => "Traslado terminado");
+            }
+        } catch(PDOException $e){
+            error_log('TrasladoModel::close->' . $e->getMessage());
+            return array("ok" => false, "msj" => $e->getMessage());
+        }
+
+    }
+
+    public function getId()
+    {
+        return $this->idTraslado;
+    }
+
+    public function setId($idTraslado)
+    {
+        $this->idTraslado = $idTraslado;
     }
 
     public function getIdUsuario()
