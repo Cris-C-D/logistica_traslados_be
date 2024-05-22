@@ -29,4 +29,16 @@ class Usuario extends Controller
         
         $this->response($usuario->save());
     }
+
+    public function editToken()
+    {
+        $this->exists(['idUsuario', 'token']);
+
+        $usuario = new UsuarioModel();
+        $usuario->setId($this->data['idUsuario']);
+        $usuario->setToken($this->data['token']);
+
+        $this->response($usuario->updateToken());
+        
+    }
 }

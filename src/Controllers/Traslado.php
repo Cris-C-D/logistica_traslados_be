@@ -49,6 +49,7 @@ class Traslado extends Controller
         $traslado = new TrasladoModel();
         $traslado->setId($this->data['idTraslado']);
         $traslado->setFechaFin(date("Y-m-d h:i:s"));
+        $traslado->setComentario($this->data['comentario']);
 
         $this->response($traslado->close());
     }

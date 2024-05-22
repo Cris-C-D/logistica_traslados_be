@@ -3,6 +3,7 @@ use ApiEntregas\Controllers\Ubicacion;
 use ApiEntregas\Controllers\Traslado;
 use ApiEntregas\Controllers\Transporte;
 use ApiEntregas\Controllers\Usuario;
+use ApiEntregas\Controllers\Login;
 use Bramus\Router\Router;
 
 $router = new Router();
@@ -55,6 +56,11 @@ $router->get('/usuarios', function (){
 $router->post('/usuarios/create', function (){
     $usuario = new Usuario();
     $usuario->create();
+});
+
+$router->post('/login', function(){
+    $login = new Login();
+    $login->auth();
 });
 
 $router->set404(function(){

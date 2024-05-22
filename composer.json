@@ -3,7 +3,8 @@
     "description": "api para logistica y entregas",
     "type": "project",
     "require": {
-        "bramus/router": "^1.6"
+        "bramus/router": "^1.6",
+        "firebase/php-jwt": "^6.4"
     },
     "autoload": {
         "psr-4": {

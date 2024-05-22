@@ -48,6 +48,68 @@ class UsuarioModel extends Model
         }
     }
 
+    public function updateToken()
+    {
+        try{
+            $query = $this->prepare("UPDATE usuario SET token = :token WHERE idUsuario = :idUsuario;");
+            return $query->execute(['idUsuario' => $this->idUsuario, 'token' => $this->token]);
+        } catch(PDOException $e) {
+            error_log("UsuarioModel::updateToken ->" . $e->getMessage());
+            return array("error" => $e->getMessage());
+        }
+    }
+
+    public function existsToken($token)
+    {
+        try{
+
+        } catch(PDOException $e){
+            error_log("UsuarioModel::existsToken ->" . $e->getMessage());
+            return array("error" => $e->getMessage());
+        }
+    }
+
+    public static function login($usuario, $password)
+    {
+        try{
+            $pdo = new Model();
+            $query = $pdo->prepare("SELECT * FROM usuario u WHERE u.usuario = :usuario");
+            $query->execute(['usuario'=>$usuario]);
+
+            if($query->rowCount()==1){
+                $user = $query->fetch(PDO::FETCH_ASSOC);
+                if($password == $user['password']){
+                    return $user;
+                }
+                return null;
+            }
+            return null;
+        } catch(PDOException $e){
+            error_log("UsuarioModel::login ->" . $e->getMessage());
+            return array("error" => $e->getMessage());
+        }
+    }
+
+    public function getId()
+    {
+        return $this->idUsuario;
+    }
+
+    public function setId($idUsuario)
+    {
+        $this->idUsuario = $idUsuario;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
     public function getNombre()
     {
         return $this->nombre;
@@ -95,6 +157,6 @@ class UsuarioModel extends Model
 
     public function setPassword($password)
     {
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $this->password = $password;
     }
 }
