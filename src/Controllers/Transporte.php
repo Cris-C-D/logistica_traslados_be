@@ -2,10 +2,10 @@
 
 namespace ApiEntregas\Controllers;
 
-use ApiEntregas\Libs\Controller;
+use ApiEntregas\Libs\Auth;
 use ApiEntregas\Models\TransporteModel;
 
-class Transporte extends Controller
+class Transporte extends Auth
 {
     public function __construct()
     {

@@ -2,10 +2,10 @@
 
 namespace ApiEntregas\Controllers;
 
-use ApiEntregas\Libs\Controller;
+use ApiEntregas\Libs\Auth;
 use ApiEntregas\Models\UsuarioModel;
 
-class Usuario extends Controller
+class Usuario extends Auth
 {
     public function __construct()
     {

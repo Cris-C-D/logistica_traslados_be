@@ -62,7 +62,9 @@ class UsuarioModel extends Model
     public function existsToken($token)
     {
         try{
-
+            $query = $this->prepare("SELECT token FROM usuario WHERE token = :token");
+            $query->execute(['token'=>$token]);
+            if($query->rowCount()>0) return true;
         } catch(PDOException $e){
             error_log("UsuarioModel::existsToken ->" . $e->getMessage());
             return array("error" => $e->getMessage());
