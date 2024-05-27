@@ -68,7 +68,7 @@ class Auth extends Controller
         $time = time();
         $token = [
             'iat' => $time,
-            'exp' => $time * 60 * 60,
+            'exp' => $time + 28800,
             'data' => ['id' => $user['idUsuario'], 'usuario' => $user['usuario']]
         ];
 
