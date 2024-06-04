@@ -69,9 +69,8 @@ class Auth extends Controller
         $token = [
             'iat' => $time,
             'exp' => $time + 28800,
-            'data' => ['id' => $user['idUsuario'], 'usuario' => $user['usuario']]
+            'data' => ['id' => $user['idUsuario'], 'usuario' => $user['usuario'], 'idTipoUsuario' => $user['idTipoUsuario']]
         ];
-
         return JWT::encode($token, $this->key, 'HS256');
     }
 }

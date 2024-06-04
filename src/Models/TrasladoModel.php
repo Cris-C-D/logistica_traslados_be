@@ -89,7 +89,7 @@ class TrasladoModel extends Model
 
 
             $sql = "WITH difference_in_seconds AS (
-                SELECT t.idTraslado, p.idUsuario, CONCAT(p.nombre, ' ', p.apellidos) AS nombre, uo.idUbicacion AS idUbicacionOrigen, uo.ubicacion AS origen, ud.idUbicacion AS idUbicacionDestino,  ud.ubicacion AS destino, tr.idTransporte, tr.transporte, tt.idTipo, tt.tipoTraslado, t.fechaInicio, t.fechaFin, TIMESTAMPDIFF(SECOND, t.fechaInicio, t.fechaFin) AS seconds, t.comentario
+                SELECT t.idTraslado, p.idUsuario, CONCAT(p.nombre, ' ', p.apellidos) AS nombre, uo.idUbicacion AS idUbicacionOrigen, uo.ubicacion AS origen, ud.idUbicacion AS idUbicacionDestino,  ud.ubicacion AS destino, tr.idTransporte, tr.transporte, tt.idTipo AS idTipoTraslado, tt.tipoTraslado, t.fechaInicio, t.fechaFin, TIMESTAMPDIFF(SECOND, t.fechaInicio, t.fechaFin) AS seconds, t.comentario
                 FROM traslado t 
                 INNER JOIN usuario p ON t.idUsuario=p.idUsuario
                 INNER JOIN ubicacion uo ON t.idUbicacionOrigen=uo.idUbicacion
@@ -98,10 +98,10 @@ class TrasladoModel extends Model
                 INNER JOIN tipo_traslado tt ON t.idTipoTraslado=tt.idTipo
                 ),
                 differences AS (
-                SELECT idTraslado, idUsuario, nombre, idUbicacionOrigen, origen, idUbicacionDestino, destino, idTransporte, transporte, idTipo, TipoTraslado, fechaInicio, fechaFin, seconds, MOD(seconds, 60) AS seconds_part, MOD(seconds, 3600) AS minutes_part, MOD(seconds, 3600 * 24) AS hours_part, comentario
+                SELECT idTraslado, idUsuario, nombre, idUbicacionOrigen, origen, idUbicacionDestino, destino, idTransporte, transporte, idTipoTraslado, TipoTraslado, fechaInicio, fechaFin, seconds, MOD(seconds, 60) AS seconds_part, MOD(seconds, 3600) AS minutes_part, MOD(seconds, 3600 * 24) AS hours_part, comentario
                 FROM difference_in_seconds
                 )
-                SELECT idTraslado, idUsuario, nombre, idUbicacionOrigen, origen, idUbicacionDestino, destino, idTransporte, transporte, idTipo, TipoTraslado, fechaInicio, fechaFin, CONCAT(FLOOR(hours_part / 3600), ' horas ', FLOOR(minutes_part / 60), ' minutos '
+                SELECT idTraslado, idUsuario, nombre, idUbicacionOrigen, origen, idUbicacionDestino, destino, idTransporte, transporte, idTipoTraslado, TipoTraslado, fechaInicio, fechaFin, CONCAT(FLOOR(hours_part / 3600), ' horas ', FLOOR(minutes_part / 60), ' minutos '
                 ) AS tiempoTraslado, comentario
                 FROM differences";
 
