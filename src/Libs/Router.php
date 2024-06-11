@@ -18,6 +18,11 @@ $router->post('/ubicaciones/create', function (){
     $ubicacion->create();
 });
 
+$router->put('/ubicaciones/edit', function (){
+    $ubicacion = new Ubicacion();
+    $ubicacion->edit();
+});
+
 $router->get('/traslados/tipos', function (){
     $traslado = new Traslado();
     $traslado->getTiposTraslado();
@@ -46,6 +51,11 @@ $router->get('/transportes', function (){
 $router->post('/transportes/create', function (){
     $transporte = new Transporte();
     $transporte->create();
+});
+
+$router->put('/transportes/edit', function (){
+    $transporte = new Transporte();
+    $transporte->edit();
 });
 
 $router->get('/usuarios', function (){

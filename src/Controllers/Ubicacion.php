@@ -25,4 +25,14 @@ class Ubicacion extends Auth
         
         $this->response($ubicacion->save());
     }
+
+    public function edit()
+    {
+        $this->exists(['idUbicacion', 'ubicacion']);
+        $ubicacion = new UbicacionModel();
+        $ubicacion->setId($this->data['idUbicacion']);
+        $ubicacion->setUbicacion($this->data['ubicacion']);
+
+        $this->response($ubicacion->edit());
+    }
 }

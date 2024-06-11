@@ -25,4 +25,14 @@ class Transporte extends Auth
 
         $this->response($transporte->save());
     }
+
+    public function edit()
+    {
+        $this->exists(['idTransporte', 'transporte']);
+        $transporte = new TransporteModel();
+        $transporte->setId($this->data['idTransporte']);
+        $transporte->setTransporte($this->data['transporte']);
+
+        $this->response($transporte->edit());
+    }
 }

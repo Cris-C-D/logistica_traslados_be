@@ -43,6 +43,25 @@ class UbicacionModel extends Model
         }
     }
 
+    public function edit()
+    {
+        try{
+            $c = $this->connect();
+            $c->beginTransaction();
+            
+            $query = $this->prepare("UPDATE ubicacion SET ubicacion = :ubicacion WHERE idUbicacion = :idUbicacion");
+            $query->bindValue(':idUbicacion', $this->idUbicacion, PDO::PARAM_INT);
+            $query->bindValue(':ubicacion', $this->ubicacion, PDO::PARAM_STR);
+            
+            if($query->execute()){
+                return array("ok" => true, "msj" => "Ubicacion editada");
+            }
+        } catch(PDOException $e){
+            error_log('UbicacionModel::edit()->' .$e->getMessage());
+            return array("ok" => false, "msj" => $e->getMessage());
+        }
+    }
+
     public function getUbicacion()
     {
         return $this->ubicacion;
@@ -51,5 +70,15 @@ class UbicacionModel extends Model
     public function setUbicacion($ubicacion)
     {
         $this->ubicacion = $ubicacion;
+    }
+
+    public function getId()
+    {
+        return $this->idUbicacion;
+    }
+
+    public function setId($idUbicacion)
+    {
+        $this->idUbicacion = $idUbicacion;
     }
 }
