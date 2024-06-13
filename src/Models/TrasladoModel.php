@@ -33,7 +33,7 @@ class TrasladoModel extends Model
         }
     }
 
-    public static function get(int $idUsuario = 0, int $idUbicacionOrigen = 0, int $idUbicacionDestino = 0, int $idTransporte = 0, int $open = 0, string $fechaInicio = '', string $fechaFin = '')
+    public static function get(int $idUsuario = 0, int $idUbicacionOrigen = 0, int $idUbicacionDestino = 0, int $idTransporte = 0, int $open = 0, string $fechaInicio = '', string $fechaFin = '', int $idTipoTraslado = 0)
     {
         try{
             $pdo = new Model();
@@ -73,6 +73,11 @@ class TrasladoModel extends Model
                     $arrayFilters[]="fechaInicio LIKE :fecha_inicio";
                     $arrayParams[':fecha_inicio'] = "%$fechaInicio%";
                 }
+            }
+
+            if($idTipoTraslado!=0){
+                $arrayFilters[]="idTipoTraslado LIKE :id_tipo_traslado";
+                $arrayParams[':id_tipo_traslado'] = $idTipoTraslado;
             }
 
             $sqlFiltros = "";

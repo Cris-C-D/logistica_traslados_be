@@ -26,6 +26,18 @@ class UsuarioModel extends Model
         }
     }
 
+    public static function getChoferes()
+    {
+        try{
+            $pdo = new Model();
+            $query = $pdo->query("SELECT idUsuario, CONCAT(nombre, ' ', apellidos) AS nombre FROM usuario WHERE idTipoUsuario=1");
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch(PDOException $e){
+            error_log("UsuarioModel::getChoferes ->" .$e->getMessage());
+            return array("error" => $e->getMessage());
+        }
+    }
+
     public function save()
     {
         try{

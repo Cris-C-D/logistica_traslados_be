@@ -17,6 +17,11 @@ class Usuario extends Auth
         $this->response(["usuarios" => UsuarioModel::getUsuarios()]);
     }
 
+    public function getChoferes()
+    {
+        $this->response(["choferes" => UsuarioModel::getChoferes()]);
+    }
+
     public function create()
     {
         $this->exists(['nombre', 'apellidos', 'idTipoUsuario', 'usuario', 'password']);

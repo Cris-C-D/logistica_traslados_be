@@ -63,6 +63,11 @@ $router->get('/usuarios', function (){
     $usuario->getUsuarios();
 });
 
+$router->get('/choferes', function (){
+    $chofer = new Usuario();
+    $chofer->getChoferes();
+});
+
 $router->post('/usuarios/create', function (){
     $usuario = new Usuario();
     $usuario->create();

@@ -26,7 +26,8 @@ class Traslado extends Auth
         $open = (isset($_GET['open']) && $_REQUEST['open'] !=NULL)?$_GET['open']:0;
         $fechaInicio = (isset($_GET['fechaInicio']) && $_REQUEST['fechaInicio'] !=NULL)?$_GET['fechaInicio']:'';
         $fechaFin = (isset($_GET['fechaFin']) && $_REQUEST['fechaFin'] !=NULL)?$_GET['fechaFin']:'';
-        $this->response(["traslados" => TrasladoModel::get($idUsuario, $idUbicacionOrigen, $idUbicacionDestino, $idTransporte, $open, $fechaInicio, $fechaFin)]);
+        $idTipoTraslado = (isset($_GET['idTipoTraslado']) && $_REQUEST['idTipoTraslado'] != NULL)?$_GET['idTipoTraslado']:0;
+        $this->response(["traslados" => TrasladoModel::get($idUsuario, $idUbicacionOrigen, $idUbicacionDestino, $idTransporte, $open, $fechaInicio, $fechaFin, $idTipoTraslado)]);
     }
 
     public function create()
